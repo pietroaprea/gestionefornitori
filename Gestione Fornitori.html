@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestione Fornitori</title>
+    <style>
+        /* Reset dei margini e padding del body */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f4f6; /* Colore di sfondo */
+            color: #333; /* Colore testo principale */
+        }
+
+        /* Stile dell'header */
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1em 0;
+        }
+
+        /* Stile del main contenente il contenuto principale */
+        main {
+            width: 90%;
+            margin: 20px auto; /* Margine top e bottom 20px, centrato orizzontalmente */
+            background-color: #fff; /* Sfondo bianco */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Ombra leggera */
+        }
+
+        /* Stile delle sezioni */
+        section {
+            margin-bottom: 30px;
+        }
+
+        /* Stile della tabella */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            cursor: pointer;
+        }
+
+        th:hover {
+            background-color: #ddd;
+        }
+
+        /* Stile dei pulsanti */
+        button {
+            padding: 10px 16px;
+            margin: 5px;
+            cursor: pointer;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        /* Stile del form */
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        label {
+            min-width: 120px;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="url"],
+        input[type="tel"],
+        textarea,
+        select {
+            width: calc(100% - 130px);
+            padding: 8px;
+            margin-bottom: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="url"]:focus,
+        input[type="tel"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #333;
+        }
+
+        textarea {
+            height: 80px;
+        }
+
+        /* Stile per il messaggio di notifica */
+        #messageContainer {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #007bff;
+            font-weight: bold;
+        }
+
+        /* Stile per gli istogrammi */
+        canvas {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Gestione Fornitori</h1>
+    </header>
+    <main>
+        <div id="messageContainer"></div>
+
+        <section>
+            <h2>Ricerca Fornitori</h2>
+            <input type="text" id="searchInput" placeholder="Cerca per nome, email, categoria">
+            <select id="categoriaInput">
+                <option value="">Seleziona una categoria...</option>
+                <option value="fotovoltaico">Fotovoltaico</option>
+                <option value="solare termico">Solare Termico</option>
+                <option value="plug and play">Plug and Play</option>
+                <option value="smart solutions">Smart Solutions</option>
+                <option value="riscaldamento">Riscaldamento</option>
+                <option value="climatizzazione">Climatizzazione</option>
+                <option value="illuminazione">Illuminazione</option>
+                <option value="e-mobility">E-Mobility</option>
+                <option value="power station">Power Station</option>
+            </select>
+            <button onclick="cercaFornitori()">Cerca</button>
+        </section>
+
+        <section>
+            <h2>Elenco Fornitori</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th onclick="ordinaTabella(0)">Nome</th>
+                        <th onclick="ordinaTabella(1)">Indirizzo</th>
+                        <th onclick="ordinaTabella(2)">Telefono</th>
+                        <th onclick="ordinaTabella(3)">Email</th>
+                        <th onclick="ordinaTabella(4)">Qualità</th>
+                        <th onclick="ordinaTabella(5)">Prezzo</th>
+                        <th onclick="ordinaTabella(6)">Affidabilità</th>
+                        <th onclick="ordinaTabella(7)">Tempi di Consegna</th>
+                        <th onclick="ordinaTabella(8)">Recensioni Clienti</th>
+                        <th>Note</th>
+                        <th>Sito Web</th>
+                        <th onclick="ordinaTabella(9)">Categoria</th>
+                        <th>Azioni</th>
+                    </tr>
+                </thead>
+                <tbody id="fornitoriElenco">
+                    <!-- Qui vengono aggiunti dinamicamente i fornitori -->
+                </tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>Istogrammi Costi Fornitori per Categoria</h2>
+            <div id="istogrammiContainer">
+                <!-- Qui vengono aggiunti dinamicamente gli istogrammi per categoria -->
+            </div>
+        </section>
+
+        <section>
+            <h2>Aggiungi Fornitore</h2>
+            <form id="formFornitore" onsubmit="salvaFornitore(event)">
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome">
+                <br>
+                <label for="indirizzo">Indirizzo:</label>
+                <input type="text" id="indirizzo">
+                <br>
+                <label for="telefono">Telefono:</label>
+                <input type="tel" id="telefono">
+                <br>
+                <label for="email">Email:</label>
+                <input type="email" id="email">
+                <br>
+                <label for="note">Note:</label>
+                <textarea id="note"></textarea>
+                <br>
+                <label for="sitoWeb">Sito Web:</label>
+                <input type="url" id="sitoWeb">
+                <br>
+                <label for="qualita">Qualità (da 1 a 5):</label>
+                <input type="number" id="qualita" min="1" max="5">
+                <br>
+                <label for="prezzo">Prezzo (da 1 a 5):</label>
+                <input type="number" id="prezzo" min="1" max="5">
+                <br>
+                <label for="affidabilita">Affidabilità (da 1 a 5):</label>
+                <input type="number" id="affidabilita" min="1" max="5">
+                <br>
+                <label for="tempiConsegna">Tempi di Consegna:</label>
+                <input type="text" id="tempiConsegna">
+                <br>
+                <label for="recensioniClienti">Recensioni Clienti:</label>
+                <textarea id="recensioniClienti"></textarea>
+                <br>
+                <label for="categoria">Categoria:</label>
+                <select id="categoria" required>
+                    <option value="fotovoltaico">Fotovoltaico</option>
+                    <option value="solare termico">Solare Termico</option>
+                    <option value="plug and play">Plug and Play</option>
+                    <option value="smart solutions">Smart Solutions</option>
+                    <option value="riscaldamento">Riscaldamento</option>
+                    <option value="climatizzazione">Climatizzazione</option>
+                    <option value="illuminazione">Illuminazione</option>
+                    <option value="e-mobility">E-Mobility</option>
+                    <option value="power station">Power Station</option>
+                </select>
+                <br>
+                <button type="submit">Salva Fornitore</button>
+                <button type="button" onclick="resettaFormFornitore()">Annulla</button>
+            </form>
+        </section>
+    </main>
+
+    <script>
+       
+
+        let fornitori = JSON.parse(localStorage.getItem('fornitori')) || []; // Recupera i fornitori da localStorage o usa un array vuoto
+
+        // Funzione per aggiornare l'elenco dei fornitori nella tabella
+        function aggiornaElencoFornitori() {
+            const tbody = document.getElementById('fornitoriElenco');
+            tbody.innerHTML = '';
+
+            fornitori.forEach(fornitore => {
+                const tr = document.createElement('tr');
+
+                const tdNome = document.createElement('td');
+                tdNome.textContent = fornitore.nome || '';
+                tr.appendChild(tdNome);
+
+                const tdIndirizzo = document.createElement('td');
+                tdIndirizzo.textContent = fornitore.indirizzo || '';
+                tr.appendChild(tdIndirizzo);
+
+                const tdTelefono = document.createElement('td');
+                tdTelefono.textContent = fornitore.telefono || '';
+                tr.appendChild(tdTelefono);
+
+                const tdEmail = document.createElement('td');
+                tdEmail.textContent = fornitore.email || '';
+                tr.appendChild(tdEmail);
+
+                const tdQualita = document.createElement('td');
+                tdQualita.textContent = fornitore.qualita || '';
+                tr.appendChild(tdQualita);
+
+                const tdPrezzo = document.createElement('td');
+                tdPrezzo.textContent = fornitore.prezzo || '';
+                tr.appendChild(tdPrezzo);
+
+                const tdAffidabilita = document.createElement('td');
+                tdAffidabilita.textContent = fornitore.affidabilita || '';
+                tr.appendChild(tdAffidabilita);
+
+                const tdTempiConsegna = document.createElement('td');
+                tdTempiConsegna.textContent = fornitore.tempiConsegna || '';
+                tr.appendChild(tdTempiConsegna);
+
+                const tdRecensioniClienti = document.createElement('td');
+                tdRecensioniClienti.textContent = fornitore.recensioniClienti || '';
+                tr.appendChild(tdRecensioniClienti);
+
+                const tdNote = document.createElement('td');
+                tdNote.textContent = fornitore.note || '';
+                tr.appendChild(tdNote);
+
+                const tdSitoWeb = document.createElement('td');
+                if (fornitore.sitoWeb) {
+                    const link = document.createElement('a');
+                    link.href = fornitore.sitoWeb;
+                    link.textContent = fornitore.sitoWeb;
+                    link.target = '_blank';
+                    tdSitoWeb.appendChild(link);
+                }
+                tr.appendChild(tdSitoWeb);
+
+                const tdCategoria = document.createElement('td');
+                tdCategoria.textContent = fornitore.categoria || '';
+                tr.appendChild(tdCategoria);
+
+                const tdAzioni = document.createElement('td');
+                const buttonModifica = document.createElement('button');
+                buttonModifica.textContent = 'Modifica';
+                buttonModifica.onclick = () => modificaFornitore(fornitore.id);
+                tdAzioni.appendChild(buttonModifica);
+
+                const buttonElimina = document.createElement('button');
+                buttonElimina.textContent = 'Elimina';
+                buttonElimina.onclick = () => eliminaFornitore(fornitore.id);
+                tdAzioni.appendChild(buttonElimina);
+
+                tr.appendChild(tdAzioni);
+
+                tbody.appendChild(tr);
+            });
+
+            // Salva l'array aggiornato di fornitori in localStorage
+            localStorage.setItem('fornitori', JSON.stringify(fornitori));
+
+            // Aggiorna gli istogrammi dei costi per categoria
+            aggiornaIstogrammaCostiPerCategoria();
+        }
+
+        // Funzione per salvare un nuovo fornitore
+        function salvaFornitore(event) {
+            event.preventDefault();
+
+            const nuovoFornitore = {
+                id: fornitori.length ? fornitori[fornitori.length - 1].id + 1 : 1,
+                nome: document.getElementById('nome').value,
+                indirizzo: document.getElementById('indirizzo').value,
+                telefono: document.getElementById('telefono').value,
+                email: document.getElementById('email').value,
+                note: document.getElementById('note').value,
+                sitoWeb: document.getElementById('sitoWeb').value,
+                qualita: parseInt(document.getElementById('qualita').value) || 0,
+                prezzo: parseInt(document.getElementById('prezzo').value) || 0,
+                affidabilita: parseInt(document.getElementById('affidabilita').value) || 0,
+                tempiConsegna: document.getElementById('tempiConsegna').value,
+                recensioniClienti: document.getElementById('recensioniClienti').value,
+                categoria: document.getElementById('categoria').value
+            };
+
+            fornitori.push(nuovoFornitore);
+            aggiornaElencoFornitori();
+            resettaFormFornitore();
+            mostraMessaggio('Fornitore aggiunto con successo!');
+        }
+
+        // Funzione per resettare il modulo di inserimento fornitore
+        function resettaFormFornitore() {
+            document.getElementById('formFornitore').reset();
+        }
+
+        // Funzione per mostrare un messaggio
+        function mostraMessaggio(messaggio) {
+            const messageContainer = document.getElementById('messageContainer');
+            messageContainer.textContent = messaggio;
+            setTimeout(() => {
+                messageContainer.textContent = '';
+            }, 3000);
+        }
+
+      function cercaFornitori() {
+    const ricerca = document.getElementById('searchInput').value.toLowerCase();
+    const categoria = document.getElementById('categoriaInput').value;
+    const fornitoriFiltrati = fornitori.filter(fornitore => {
+        return (fornitore.nome.toLowerCase().includes(ricerca) || 
+                fornitore.email.toLowerCase().includes(ricerca) || 
+                fornitore.categoria.toLowerCase().includes(ricerca)) && 
+                (categoria === "" || fornitore.categoria === categoria);
+    });
+
+    // Aggiorna l'elenco dei fornitori nella tabella con quelli filtrati
+    aggiornaElencoFornitori(fornitoriFiltrati);
+}
+// Funzione per aggiornare l'elenco dei fornitori nella tabella
+function aggiornaElencoFornitori(listaFornitori) {
+    const tbody = document.getElementById('fornitoriElenco');
+    tbody.innerHTML = '';
+
+    const fornitoriDaMostrare = listaFornitori || fornitori;
+
+    fornitoriDaMostrare.forEach(fornitore => {
+        const tr = document.createElement('tr');
+
+        const tdNome = document.createElement('td');
+        tdNome.textContent = fornitore.nome || '';
+        tr.appendChild(tdNome);
+
+        const tdIndirizzo = document.createElement('td');
+        tdIndirizzo.textContent = fornitore.indirizzo || '';
+        tr.appendChild(tdIndirizzo);
+
+        const tdTelefono = document.createElement('td');
+        tdTelefono.textContent = fornitore.telefono || '';
+        tr.appendChild(tdTelefono);
+
+        const tdEmail = document.createElement('td');
+        tdEmail.textContent = fornitore.email || '';
+        tr.appendChild(tdEmail);
+
+        const tdQualita = document.createElement('td');
+        tdQualita.textContent = fornitore.qualita || '';
+        tr.appendChild(tdQualita);
+
+        const tdPrezzo = document.createElement('td');
+        tdPrezzo.textContent = fornitore.prezzo || '';
+        tr.appendChild(tdPrezzo);
+
+        const tdAffidabilita = document.createElement('td');
+        tdAffidabilita.textContent = fornitore.affidabilita || '';
+        tr.appendChild(tdAffidabilita);
+
+        const tdTempiConsegna = document.createElement('td');
+        tdTempiConsegna.textContent = fornitore.tempiConsegna || '';
+        tr.appendChild(tdTempiConsegna);
+
+        const tdRecensioniClienti = document.createElement('td');
+        tdRecensioniClienti.textContent = fornitore.recensioniClienti || '';
+        tr.appendChild(tdRecensioniClienti);
+
+        const tdNote = document.createElement('td');
+        tdNote.textContent = fornitore.note || '';
+        tr.appendChild(tdNote);
+
+        const tdSitoWeb = document.createElement('td');
+        if (fornitore.sitoWeb) {
+            const link = document.createElement('a');
+            link.href = fornitore.sitoWeb;
+            link.textContent = fornitore.sitoWeb;
+            link.target = '_blank';
+            tdSitoWeb.appendChild(link);
+        }
+        tr.appendChild(tdSitoWeb);
+
+        const tdCategoria = document.createElement('td');
+        tdCategoria.textContent = fornitore.categoria || '';
+        tr.appendChild(tdCategoria);
+
+        const tdAzioni = document.createElement('td');
+        const buttonModifica = document.createElement('button');
+        buttonModifica.textContent = 'Modifica';
+        buttonModifica.onclick = () => modificaFornitore(fornitore.id);
+        tdAzioni.appendChild(buttonModifica);
+
+        const buttonElimina = document.createElement('button');
+        buttonElimina.textContent = 'Elimina';
+        buttonElimina.onclick = () => eliminaFornitore(fornitore.id);
+        tdAzioni.appendChild(buttonElimina);
+
+        tr.appendChild(tdAzioni);
+
+        tbody.appendChild(tr);
+    });
+
+    // Salva l'array aggiornato di fornitori in localStorage
+    localStorage.setItem('fornitori', JSON.stringify(fornitori));
+
+    // Aggiorna gli istogrammi dei costi per categoria
+    aggiornaIstogrammaCostiPerCategoria();
+}
+
+
+        // Funzione per ordinare la tabella
+        function ordinaTabella(indiceColonna) {
+            const direzione = document.querySelectorAll('th')[indiceColonna].dataset.direzione === 'asc' ? 'desc' : 'asc';
+            document.querySelectorAll('th')[indiceColonna].dataset.direzione = direzione;
+
+            fornitori.sort((a, b) => {
+                let valoreA = Object.values(a)[indiceColonna];
+                let valoreB = Object.values(b)[indiceColonna];
+
+                if (indiceColonna > 3 && indiceColonna < 9) {
+                    valoreA = parseInt(valoreA);
+                    valoreB = parseInt(valoreB);
+                }
+
+                if (valoreA < valoreB) {
+                    return direzione === 'asc' ? -1 : 1;
+                } else if (valoreA > valoreB) {
+                    return direzione === 'asc' ? 1 : -1;
+                } else {
+                    return 0;
+                }
+            });
+            aggiornaElencoFornitori();
+        }
+
+        // Funzione per eliminare un fornitore
+        function eliminaFornitore(id) {
+            fornitori = fornitori.filter(fornitore => fornitore.id !== id);
+            aggiornaElencoFornitori();
+            mostraMessaggio('Fornitore eliminato con successo!');
+        }
+
+        // Funzione per modificare un fornitore
+        function modificaFornitore(id) {
+            const fornitore = fornitori.find(fornitore => fornitore.id === id);
+
+            document.getElementById('nome').value = fornitore.nome;
+            document.getElementById('indirizzo').value = fornitore.indirizzo;
+            document.getElementById('telefono').value = fornitore.telefono;
+            document.getElementById('email').value = fornitore.email;
+            document.getElementById('note').value = fornitore.note;
+            document.getElementById('sitoWeb').value = fornitore.sitoWeb;
+            document.getElementById('qualita').value = fornitore.qualita;
+            document.getElementById('prezzo').value = fornitore.prezzo;
+            document.getElementById('affidabilita').value = fornitore.affidabilita;
+            document.getElementById('tempiConsegna').value = fornitore.tempiConsegna;
+            document.getElementById('recensioniClienti').value = fornitore.recensioniClienti;
+            document.getElementById('categoria').value = fornitore.categoria;
+
+            eliminaFornitore(id);
+        }
+
+        // Funzione per aggiornare gli istogrammi dei costi per categoria
+        function aggiornaIstogrammaCostiPerCategoria() {
+            const istogrammiContainer = document.getElementById('istogrammiContainer');
+            istogrammiContainer.innerHTML = '';
+
+            const categorie = [...new Set(fornitori.map(fornitore => fornitore.categoria))];
+
+            categorie.forEach(categoria => {
+                const categoriaFornitori = fornitori.filter(fornitore => fornitore.categoria === categoria);
+
+                const canvas = document.createElement('canvas');
+                canvas.id = `istogrammaCosti-${categoria}`;
+                istogrammiContainer.appendChild(canvas);
+
+                const ctx = canvas.getContext('2d');
+                const prezzi = categoriaFornitori.map(fornitore => fornitore.prezzo);
+                const labels = categoriaFornitori.map(fornitore => fornitore.nome);
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: `Costo Fornitori (${categoria})`,
+                            data: prezzi,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            });
+        }
+
+        // Inizializza l'elenco dei fornitori e gli istogrammi al caricamento della pagina
+        document.addEventListener('DOMContentLoaded', () => {
+            aggiornaElencoFornitori();
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html>
